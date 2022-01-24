@@ -1,0 +1,214 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "type": "string",
+            "allowedValues": [
+                "westus2",
+                "westeurope",
+                "eastus",
+                "northeurope",
+                "centralus",
+                "eastus2",
+                "francecentral",
+                "uksouth"
+            ]
+        },
+        "applicationResourceName": {
+            "type": "string"
+        },
+        "managedResourceGroupId": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "managedIdentity": {
+            "type": "object",
+            "defaultValue": {}
+        },
+        "initialConsulVersion": {
+            "type": "string",
+            "defaultValue": "v1.11.2"
+        },
+        "storageAccountName": {
+            "type": "string",
+            "defaultValue": "[concat('storage', uniqueString(resourceGroup().id, deployment().name))]"
+        },
+        "blobContainerName": {
+            "type": "string",
+            "defaultValue": "[concat('blob', uniqueString(resourceGroup().id, deployment().name))]"
+        },
+        "identityName": {
+            "type": "string",
+            "defaultValue": "[concat(parameters('clusterName'), '-identity')]"
+        },
+        "clusterMode": {
+            "type": "string",
+            "defaultValue": "PRODUCTION",
+            "allowedValues": [
+                "PRODUCTION",
+                "DEVELOPMENT"
+            ]
+        },
+        "clusterName": {
+            "type": "string",
+            "defaultValue": "cluster"
+        },
+        "consulDataCenter": {
+            "type": "string",
+            "defaultValue": "dc1"
+        },
+        "numServers": {
+            "type": "string",
+            "defaultValue": "3"
+        },
+        "numServersDevelopment": {
+            "type": "string",
+            "defaultValue": "1"
+        },
+        "automaticUpgrades": {
+            "type": "string",
+            "defaultValue": "disabled"
+        },
+        "consulConnect": {
+            "type": "string",
+            "defaultValue": "enabled"
+        },
+        "externalEndpoint": {
+            "type": "string",
+            "defaultValue": "enabled"
+        },
+        "snapshotInterval": {
+            "type": "string",
+            "defaultValue": "1d"
+        },
+        "snapshotRetention": {
+            "type": "string",
+            "defaultValue": "1m"
+        },
+        "consulVnetCidr": {
+            "type": "string",
+            "defaultValue": "172.25.16.0/24"
+        },
+        "providerBaseURL": {
+            "defaultValue": "https://ama-api.hashicorp.cloud/consulama/2021-04-23",
+            "type": "String",
+            "metadata": {
+                "description": "The URI of the custom provider API"
+            }
+        },
+        "email": {
+            "type": "string"
+        },
+        "federationToken": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "sourceChannel": {
+            "type": "string",
+            "defaultValue": "azure-portal"
+        },
+        "auditLoggingEnabled": {
+            "type": "string",
+            "defaultValue": "disabled",
+            "allowedValues": [
+                "enabled",
+                "disabled"
+            ]
+        },
+        "auditLogStorageContainerURL": {
+            "type": "string",
+            "defaultValue": ""
+        }
+    },
+    "variables": {
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Solutions/applications",
+            "apiVersion": "2017-09-01",
+            "name": "[parameters('applicationResourceName')]",
+            "location": "[parameters('location')]",
+            "kind": "MarketPlace",
+            "identity": "[if(empty(parameters('managedIdentity')),json('null'),parameters('managedIdentity'))]",
+            "plan": {
+                "name": "on-demand-v2",
+                "product": "hcs-production",
+                "publisher": "hashicorp-4665790",
+                "version": "0.0.70"
+            },
+            "properties": {
+                "managedResourceGroupId": "[parameters('managedResourceGroupId')]",
+                "parameters": {
+                    "initialConsulVersion": {
+                        "value": "[parameters('initialConsulVersion')]"
+                    },
+                    "storageAccountName": {
+                        "value": "[parameters('storageAccountName')]"
+                    },
+                    "blobContainerName": {
+                        "value": "[parameters('blobContainerName')]"
+                    },
+                    "identityName": {
+                        "value": "[parameters('identityName')]"
+                    },
+                    "clusterMode": {
+                        "value": "[parameters('clusterMode')]"
+                    },
+                    "clusterName": {
+                        "value": "[parameters('clusterName')]"
+                    },
+                    "consulDataCenter": {
+                        "value": "[parameters('consulDataCenter')]"
+                    },
+                    "numServers": {
+                        "value": "[parameters('numServers')]"
+                    },
+                    "numServersDevelopment": {
+                        "value": "[parameters('numServersDevelopment')]"
+                    },
+                    "automaticUpgrades": {
+                        "value": "[parameters('automaticUpgrades')]"
+                    },
+                    "consulConnect": {
+                        "value": "[parameters('consulConnect')]"
+                    },
+                    "externalEndpoint": {
+                        "value": "[parameters('externalEndpoint')]"
+                    },
+                    "snapshotInterval": {
+                        "value": "[parameters('snapshotInterval')]"
+                    },
+                    "snapshotRetention": {
+                        "value": "[parameters('snapshotRetention')]"
+                    },
+                    "consulVnetCidr": {
+                        "value": "[parameters('consulVnetCidr')]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    },
+                    "providerBaseURL": {
+                        "value": "[parameters('providerBaseURL')]"
+                    },
+                    "email": {
+                        "value": "[parameters('email')]"
+                    },
+                    "federationToken": {
+                        "value": "[parameters('federationToken')]"
+                    },
+                    "sourceChannel": {
+                        "value": "[parameters('sourceChannel')]"
+                    },
+                    "auditLoggingEnabled": {
+                        "value": "[parameters('auditLoggingEnabled')]"
+                    },
+                    "auditLogStorageContainerURL": {
+                        "value": "[parameters('auditLogStorageContainerURL')]"
+                    }
+                },
+                "jitAccessPolicy": null
+            }
+        }
+    ]
+}

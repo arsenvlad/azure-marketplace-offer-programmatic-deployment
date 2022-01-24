@@ -1,0 +1,74 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "monitorName": {
+            "type": "string"
+        },
+        "monitorLocation": {
+            "type": "string"
+        },
+        "firstName": {
+            "type": "string"
+        },
+        "lastName": {
+            "type": "string"
+        },
+        "companyName": {
+            "type": "string"
+        },
+        "emailAddress": {
+            "type": "string"
+        },
+        "domain": {
+            "type": "string"
+        },
+        "country": {
+            "type": "string"
+        },
+        "tagRulesProperties": {
+            "defaultValue": {
+                "logRules": {
+                    "sendSubscriptionLogs": false,
+                    "sendActivityLogs": false,
+                    "filteringTags": []
+                }
+            },
+            "type": "object"
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Elastic/monitors",
+            "apiVersion": "2020-07-01-preview",
+            "name": "[parameters('monitorName')]",
+            "location": "[parameters('monitorLocation')]",
+            "sku": {
+                "name": "ess-monthly-consumption_Monthly"
+            },
+            "properties": {
+                "userInfo": {
+                    "firstName": "[parameters('firstName')]",
+                    "lastName": "[parameters('lastName')]",
+                    "companyName": "[parameters('companyName')]",
+                    "emailAddress": "[parameters('emailAddress')]",
+                    "companyInfo": {
+                        "domain": "[parameters('domain')]",
+                        "country": "[parameters('country')]"
+                    }
+                }
+            },
+            "resources": [
+                {
+                    "type": "tagRules",
+                    "apiVersion": "2020-07-01-preview",
+                    "name": "default",
+                    "dependsOn": [
+                        "[parameters('monitorName')]"
+                    ],
+                    "properties": "[parameters('tagRulesProperties')]"
+                }
+            ]
+        }
+    ]
+}

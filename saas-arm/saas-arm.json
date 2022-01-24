@@ -1,0 +1,57 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "name": {
+            "type": "string"
+        },
+        "planId": {
+            "type": "string"
+        },
+        "offerId": {
+            "type": "string"
+        },
+        "publisherId": {
+            "type": "string"
+        },
+        "quantity": {
+            "type": "int"
+        },
+        "termId": {
+            "type": "string"
+        },
+        "azureSubscriptionId": {
+            "type": "string"
+        },
+        "publisherTestEnvironment": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "autoRenew": {
+            "type": "bool"
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.SaaS/resources",
+            "apiVersion": "2018-03-01-beta",
+            "name": "[parameters('name')]",
+            "location": "global",
+            "properties": {
+                "saasResourceName": "[parameters('name')]",
+                "publisherId": "[parameters('publisherId')]",
+                "SKUId": "[parameters('planId')]",
+                "offerId": "[parameters('offerId')]",
+                "quantity": "[parameters('quantity')]",
+                "termId": "[parameters('termId')]",
+                "autoRenew": "[parameters('autoRenew')]",
+                "paymentChannelType": "SubscriptionDelegated",
+                "paymentChannelMetadata": {
+                    "AzureSubscriptionId": "[parameters('azureSubscriptionId')]"
+                },
+                "publisherTestEnvironment": "[parameters('publisherTestEnvironment')]",
+                "storeFront": "AzurePortal"
+            }
+        }
+    ]
+}
