@@ -1,5 +1,7 @@
 # Programmatic Deployment of Azure Marketplace Offers
 
+This repo shows simple examples of how to programmatically deploy various offer types from Azure Marketplace.
+
 ## Table of Contents
 
 * [Elasticsearch SaaS from Azure Marketplace](#elasticsearch-saas-from-azure-marketplace)
@@ -14,6 +16,8 @@
 
 ### Deploy Elasticsearch using ARM template and Azure CLI
 
+ARM template example [elasticsearch-arm/elasticsearch-arm.json](elasticsearch-arm/elasticsearch-arm.json):
+
 ```bash
 az group create --resource-group avelastic100 --location eastus2
 
@@ -22,12 +26,14 @@ az deployment group create --resource-group avelastic100 --template-file elastic
 
 Since Elasticsearch is a 3rd party paid offering, Azure subscription must be associated with a valid payment method and cannot be free or sponsored subscription. If there is no valid payment method on the Azure subscription, the deployment will fail with the following type of error:
 
-```json
+```jsonc
 {"status":"Failed","error":{"code":"DeploymentFailed","message":"At least one resource deployment operation failed. Please list deployment operations for details. Please see https://aka.ms/DeployOperations for usage details.","details":[{"code":"BadRequest","message":"{\r\n  \"error\": {\r\n    \"code\": \"BadRequest\",\r\n    \"message\": \"{\\\"message\\\":\\\"Purchase 
 has failed because we couldn't find a valid credit card nor a payment method associated with your Azure subscription. Please use a different Azure subscription or add\\\\\\\\update current credit card or payment method for this subscription and retry.\\\",\\\"code\\\":\\\"BadRequest\\\"}\"\r\n  }\r\n}"}]}}
 ```
 
 ### Deploy Elasticsearch using Terraform invoking an ARM template
+
+Terraform example [elasticsearch-terraform/main.tf](elasticsearch-terraform/main.tf):
 
 ```bash
 cd elasticsearch-terraform
@@ -43,7 +49,7 @@ In order to deploy 3rd party VMs from Azure Marketplace, you need to first accep
 
 If the terms are not yet accepted, the following error will be shown:
 
-```json
+```jsonc
 {"error":{"code":"MarketplacePurchaseEligibilityFailed","message":"Marketplace purchase eligibilty check returned errors. See inner errors for details. ","details":[{"code":"BadRequest","message":"Offer with PublisherId: 'barracudanetworks', OfferId: 'waf' cannot be purchased due to validation errors. For more information see details. Correlation Id: 'a7779729-3814-4461-a919-8b5d388dac77' You have not accepted the legal terms on this subscription: 'c9c8ae57-acdb-48a9-99f8-d57704f18dee' for this plan. Before the subscription can be used, you need to accept the legal terms of the image. To read and accept legal terms, use the Azure CLI commands described at https://go.microsoft.com/fwlink/?linkid=2110637 or the PowerShell commands available at https://go.microsoft.com/fwlink/?linkid=862451. Alternatively, deploying via the Azure portal provides a UI experience for reading and accepting the legal terms. Offer details: publisher='barracudanetworks' offer = 'waf', sku = 'byol', Correlation Id: 'a7779729-3814-4461-a919-8b5d388dac77'.[{\"You have not accepted the legal terms on this subscription: 'c9c8ae57-acdb-48a9-99f8-d57704f18dee' for this plan. Before the subscription can be used, you need to accept the legal terms of the image. To read and accept legal terms, use the Azure CLI commands described at https://go.microsoft.com/fwlink/?linkid=2110637 or the PowerShell commands available at https://go.microsoft.com/fwlink/?linkid=862451. Alternatively, deploying via the Azure portal provides a UI experience for reading and accepting the legal terms. Offer details: publisher='barracudanetworks' offer = 'waf', sku = 'byol', Correlation Id: 'a7779729-3814-4461-a919-8b5d388dac77'.\":\"StoreApi\"}]"}]}}
 ```
 
@@ -79,7 +85,7 @@ If the plan block is not specified, the deployment will fail with the following 
 Code="VMMarketplaceInvalidInput" Message="Creating a virtual machine from Marketplace image or a custom image sourced from a Marketplace image requires Plan information in the request. VM: '/subscriptions/c9c8ae57-acdb-48a9-99f8-d57704f18dee/resourceGroups/myResourceGroup/providers/Microsoft.Compute/virtualMachines/myVM'.
 ```
 
-Terraform example
+Terraform example [vm-terraform/main.tf](vm-terraform/main.tf):
 
 ```bash
 cd vm-terraform
@@ -95,11 +101,13 @@ Azure Portal generates an ARM template and specific parameter values for the Saa
 
 If a given SaaS offer was never deployed in the Azure subscription, the programmatic deployment will fail with an error like the following:
 
-```json
+```jsonc
 {"status":"Failed","error":{"code":"DeploymentFailed","message":"At least one resource deployment operation failed. Please list deployment operations for details. Please see https://aka.ms/DeployOperations for usage details.","details":[{"code":"BadRequest","message":"{\r\n  \"error\": {\r\n    \"code\": \"BadRequest\",\r\n    \"message\": \"Failed to process eligibility check with error Purchase has failed due to signature verification on Marketplace legal agreement. Please retry. If error persists use different Azure subscription, or contact support with correlation-id 'beac5707-71cd-4082-9a8c-e3ecbc1385c0' and this error message..\"\r\n  }\r\n}"}]}}
 ```
 
 ### Deploy SaaS offer using ARM template and Azure CLI
+
+ARM template example [saas-arm/saas-arm.json](saas-arm/saas-arm.json):
 
 ```bash
 az group create --resource-group avsaas100 --location eastus2
@@ -176,7 +184,7 @@ az rest --method post --uri /subscriptions/c9c8ae57-acdb-48a9-99f8-d57704f18dee/
 
 Please review the section above describing how to deploy SaaS offer using ARM since Terraform deployment would use the same ARM template.
 
-Terraform example
+Terraform example [saas-terraform/main.tf](saas-terraform/main.tf):
 
 ```bash
 cd saas-terraform
@@ -207,6 +215,8 @@ If Azure Managed Application is "paid" (i.e., uses monthly or metered billing), 
 
 ### Deploy Azure Managed Application using ARM template and Azure CLI
 
+ARM template example [managedapp-arm/managedapp-arm.json](managedapp-arm/managedapp-arm.json):
+
 ```bash
 az group create --resource-group avmanagedapp100 --location eastus2
 
@@ -217,7 +227,7 @@ az deployment group create --resource-group avmanagedapp100 --template-file mana
 
 Please review the section above describing how to deploy Azure Managed App offer using ARM since Terraform deployment would use the same ARM template.
 
-Terraform example
+Terraform example [managedapp-terraform/main.tf](managedapp-terraform/main.tf):
 
 ```bash
 cd managedapp-terraform
